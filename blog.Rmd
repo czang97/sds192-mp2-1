@@ -16,9 +16,15 @@ load("committees.rda")
 load("contributions.rda")
 ```
 
-## function, join, 5 verbs
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+## function, join, 5 verbs,  Issues tab, blog post text
 
 ```{r}
-
+house_win<-house_elections%>%
+  filter(ge_winner=="W")
 ```
 
