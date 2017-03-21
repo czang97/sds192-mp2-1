@@ -1,6 +1,6 @@
 ---
 title: "Mini-Project 2"
-author: "Your Name Here"
+author: "Yi Wang & Ziwei 'Crystal' Zang"
 date: "March 24, 2017"
 output: html_document
 ---
@@ -25,6 +25,7 @@ library(ggplot2)
 
 ```{r}
 house_win<-house_elections%>%
-  filter(ge_winner=="W")
+  filter(ge_winner=="W")%>%
+  rename(cand_name = candidate_name)
 ```
 
