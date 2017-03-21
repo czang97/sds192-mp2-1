@@ -61,6 +61,7 @@ contributions%>%
   summarise(sum=sum(transaction_amt))
 ```
 
+<<<<<<< HEAD
 ### scatterplot - is there a relation between votes and money?
 
 ```{r}
@@ -73,6 +74,20 @@ ggplot(house_win,aes(x=log(transaction_amountsum),y=log(general_votes), col=part
 ggplot(subset(house_win,party %in% c("D","R")) ,aes(x=log(transaction_amountsum),y=log(general_votes)))+geom_jitter()+facet_grid(.~factor(party))+stat_smooth(method="lm", se=F)
                                                                                                       
 
+=======
+##Function for transaction amount for winning house candidates per states
+```{r}
+transaction_per_state <- function(state_arg){
+  house_win%>%
+    select(cand_office_state, transaction_amountsum)%>%
+    group_by(cand_office_state)%>%
+    summarise(transactionsum = sum(transaction_amountsum))%>%
+    filter(cand_office_state == state_arg)
+}
+##Transaction Sum for State MA's and VA's winning house candidates, by running this function, the transaction sum for each state without writing repeatative commands
+transaction_per_state(state_arg = "MA")
+transaction_per_state(state_arg = "VA")
+>>>>>>> 363acca5501ef4c2f0d0f15b6257c605d0fd7316
 ```
 
 ### linear model - prove a statistically significant correlation
@@ -91,4 +106,10 @@ ggplot(subset(house_win,party %in% c("D","R")) ,aes(x=log(transaction_amountsum)
                                                                                                       
 ```
 
+<<<<<<< HEAD
 As we can see from facet grid, for Democrats, as transaction amount goes up, votes increases with it while surprisingly, for Rebulican, it seems to work the opposite way. (WWOWW)
+=======
+
+
+
+>>>>>>> 363acca5501ef4c2f0d0f15b6257c605d0fd7316
