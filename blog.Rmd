@@ -29,7 +29,7 @@ committees_copy <- committees%>%
   rename(cand_pcc = cmte_id)
 ```
 
-##Contribution
+##Contribution in a closer look
 ```{r}
 transaction_cand <- contributions%>%
   group_by(cand_id)%>%
@@ -45,9 +45,13 @@ house_win<-house_elections%>%
   rename(cand_id = fec_id)%>%
   #Looking at the detail information of each candidate
   left_join(candidates, by = "cand_id")%>%
+  #also add their committees info for next step analysis
   left_join(committees_copy, by = "cand_pcc")%>%
+  #rename the column for join
   rename(cand_id = cand_id.x)%>%
+  #add transaction amount into our table for future analysis
   left_join(transaction_cand, by = "cand_id")%>%
+  #omit unnessary data
   select(cand_id,candidate_name,party, general_votes, cand_election_yr,cand_office_state, cand_pcc, cmte_name, transaction_amountsum)
 ```
 
@@ -57,9 +61,34 @@ contributions%>%
   summarise(sum=sum(transaction_amt))
 ```
 
-### function
-```{r}
+### scatterplot - is there a relation between votes and money?
 
+```{r}
+ggplot(house_win,aes(x=log(transaction_amountsum),y=log(general_votes), col=party))+geom_jitter()
 ```
 
 
+### does this pattern holds for both parties?
+```{r}
+ggplot(subset(house_win,party %in% c("D","R")) ,aes(x=log(transaction_amountsum),y=log(general_votes)))+geom_jitter()+facet_grid(.~factor(party))+stat_smooth(method="lm", se=F)
+                                                                                                      
+
+```
+
+### linear model - prove a statistically significant correlation
+
+we fit a linear model to prove the theory. As we can see from a very low p-value. We can carefully suggest that there is a correlation between transaction amount and general votes of winning candidates. 
+
+```{r}
+fit <- lm( general_votes~ transaction_amountsum , data=house_win)
+summary(fit)
+```
+
+
+### does this pattern holds for both parties?
+```{r}
+ggplot(subset(house_win,party %in% c("D","R")) ,aes(x=log(transaction_amountsum),y=log(general_votes)))+geom_jitter()+facet_grid(.~factor(party))+stat_smooth(method="lm", se=F)
+                                                                                                      
+```
+
+As we can see from facet grid, for Democrats, as transaction amount goes up, votes increases with it while surprisingly, for Rebulican, it seems to work the opposite way. (WWOWW)
