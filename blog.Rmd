@@ -57,9 +57,21 @@ contributions%>%
   summarise(sum=sum(transaction_amt))
 ```
 
-### function
+##Function for transaction amount for winning house candidates per states
 ```{r}
-
+transaction_per_state <- function(state_arg){
+  house_win%>%
+    select(cand_office_state, transaction_amountsum)%>%
+    group_by(cand_office_state)%>%
+    summarise(transactionsum = sum(transaction_amountsum))%>%
+    filter(cand_office_state == state_arg)
+}
+##Transaction Sum for State MA's and VA's winning house candidates, by running this function, the transaction sum for each state without writing repeatative commands
+transaction_per_state(state_arg = "MA")
+transaction_per_state(state_arg = "VA")
 ```
+
+
+
 
 
