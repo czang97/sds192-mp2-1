@@ -29,23 +29,37 @@ committees_copy <- committees%>%
   rename(cand_pcc = cmte_id)
 ```
 
-
-```{r}
-house_win<-house_elections%>%
-  filter(ge_winner=="W")%>%
-  rename(cand_id = fec_id)%>%
-  left_join(candidates, by = "cand_id")%>%
-  left_join(committees_copy, by = "cand_pcc")%>%
-  select(cand_id,candidate_name,party, general_votes, cand_election_yr,cand_office_state, cand_pcc, cmte_name)
-  
-```
-
 ##Contribution
 ```{r}
-cont_sum <- contributions%>%
-  group_by(name)%>%
-  summarize(N = n(), transaction_amountsum = sum(transaction_amt))%>%
-  filter(N>20)%>%
+transaction_cand <- contributions%>%
+  group_by(cand_id)%>%
+  summarize(N = n(), transaction_amountsum = sum(transaction_amt))
   
 ```
+
+##Join each candidate id with its corresponding contribution committees
+```{r}
+house_win<-house_elections%>%
+  #Only looking at the candidates win the house election
+  filter(ge_winner=="W")%>%
+  rename(cand_id = fec_id)%>%
+  #Looking at the detail information of each candidate
+  left_join(candidates, by = "cand_id")%>%
+  left_join(committees_copy, by = "cand_pcc")%>%
+  rename(cand_id = cand_id.x)%>%
+  left_join(transaction_cand, by = "cand_id")%>%
+  select(cand_id,candidate_name,party, general_votes, cand_election_yr,cand_office_state, cand_pcc, cmte_name, transaction_amountsum)
+```
+
+```{r}
+contributions%>%
+  group_by(cand_id)%>%
+  summarise(sum=sum(transaction_amt))
+```
+
+### function
+```{r}
+
+```
+
 
