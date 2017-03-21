@@ -23,9 +23,29 @@ library(ggplot2)
 
 ## function, join, 5 verbs,  Issues tab, blog post text
 
+##Rename
+```{r}
+committees_copy <- committees%>%
+  rename(cand_pcc = cmte_id)
+```
+
+
 ```{r}
 house_win<-house_elections%>%
   filter(ge_winner=="W")%>%
-  rename(cand_name = candidate_name)
+  rename(cand_id = fec_id)%>%
+  left_join(candidates, by = "cand_id")%>%
+  left_join(committees_copy, by = "cand_pcc")%>%
+  select(cand_id,candidate_name,party, general_votes, cand_election_yr,cand_office_state, cand_pcc, cmte_name)
+  
+```
+
+##Contribution
+```{r}
+cont_sum <- contributions%>%
+  group_by(name)%>%
+  summarize(N = n(), transaction_amountsum = sum(transaction_amt))%>%
+  filter(N>20)%>%
+  
 ```
 
